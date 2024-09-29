@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Interactive Mind Map</title>
+    <style>
+        body {
+            margin: 0;
+            
+            overflow: hidden;
+        }
+        #mindmap-container {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        #mindmap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform-origin: 0 0;
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        .node {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            cursor: move;
+            user-select: none;
+            z-index: 2;
+            white-space: nowrap;
+        }
+        .selected {
+            border: 2px solid blue;
+        }
+        .line {
+            position: absolute;
+            background-color: black;
+            height: 2px;
+            transform-origin: 0 50%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .permanent-line {
+            pointer-events: auto;
+            cursor: pointer;
+        }
+        #controls {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 3;
+        }
+        .metal-related {
+            color: #666;
+        }
+        .timber-related {
+            color: #309C30;
+        }
+        .plastic-related {
+            color: purple;
+        }
+    </style>
+</head>
+<body>
+
+<div id="mindmap-container">
+    <div id="mindmap"><div id="lines-layer"></div>
+        <div class="node metal-related" id="magnetic" style="left: 538px; top: 467.8px;">🧲 Magnetic</div>
+        <div class="node metal-related" id="oxidised" style="left: 529px; top: 501px;">🔥 More easily oxidised</div>
+        <div class="node timber-related" id="hardwood" style="left: 112.444px; top: 945.222px; font-size:18px;">🪵 Hardwood</div>
+        <div class="node timber-related" id="softwood" style="left: 258.556px; top: 946.6px; font-size:18px;">🌱 Softwood</div>
+        <div class="node metal-related" id="puremetal" style="left: 227.963px; top: 419.509px; font-size:22px;">🔬 Pure metal</div>
+        <div class="node metal-related" id="alloy" style="left: 103px; top: 421px; font-size:22px;">🔗 Alloy</div>
+        <div class="node metal-related" id="ferrous" style="left: 567.6px; top: 419.6px; font-size:22px;">🧲 Ferrous</div>
+        <div class="node metal-related" id="nonferrous" style="left: 391.873px; top: 419.764px; font-size:22px;">🔔 Non-ferrous</div>
+        <div class="node timber-related" id="birch" style="left: 83.3937px; top: 836.181px;">🌳 Birch</div>
+        <div class="node timber-related" id="acacia" style="left: 89.4546px; top: 805.09px;">🌳 Acacia</div>
+        <div class="node timber-related" id="oak" style="left: 79.7277px; top: 870.221px;">🌳 Oak</div>
+        <div class="node timber-related" id="cherry" style="left: 122.546px; top: 772.183px;">🌸 Cherry</div>
+        <div class="node timber-related" id="fir" style="left: 373.464px; top: 873.383px;">🎄 Fir</div>
+        <div class="node timber-related" id="cedar" style="left: 343.877px; top: 765.435px;">🌿 Cedar</div>
+        <div class="node timber-related" id="pine" style="left: 381.233px; top: 837.687px;">🌲 Pine</div>
+        <div class="node timber-related" id="spruce" style="left: 369.081px; top: 800.625px;">🌲 Spruce</div>
+        <div class="node plastic-related" id="thermal" style="left: 341.164px; top: 175.483px; font-size:22px;">🔥 Thermal or Thermalforming</div>
+        <div class="node timber-related" id="natural" style="left: 213.334px; top: 781px; font-size:22px;">🌿 Natural</div>
+        <div class="node timber-related" id="highdensity" style="left: 110.327px; top: 996.764px;">💰 $$$, 🗜Higher Density, ⌛Grow more slowly</div>
+        <div class="node timber-related" id="deciduous" style="left: 107.222px; top: 909.444px;">🍂 Deciduous trees</div>
+        <div class="node timber-related" id="coniferous" style="left: 258.696px; top: 906.577px;">🌲 Coniferous trees</div>
+        <div class="node metal-related" id="ingot" style="left: 179.6px; top: 469px;">🔥(Extracted ingot from ore)</div>
+        <div class="node metal-related" id="carbonsteel" style="left: 59px; top: 608.4px;">⚙️ Carbon Steel (iron + carbon)</div>
+        <div class="node metal-related" id="brass" style="left: 61.4px; top: 565.2px;">🎺 Brass (copper + zinc)</div>
+        <div class="node plastic-related" id="linebender" style="left: 587.014px; top: 148.298px;">📏 Line bender</div>
+        <div class="node metal-related" id="mixture" style="left: -49.5092px; top: 380.691px;">🧪 (Mixture of at least a metal with an element)</div>
+        <div class="node metal-related" id="iron" style="left: 541.6px; top: 381.6px;">⚙️ (have iron or just iron)</div>
+        <div class="node plastic-related" id="hips" style="left: 514.715px; top: 224.714px;">🌈 HIPS</div>
+        <div class="node plastic-related" id="acrylic" style="left: 401.286px; top: 225.571px;">🎨 Acrylic</div>
+        <div class="node metal-related" id="metal" style="left: 329.582px; top: 343.091px; font-size:32px;">🔧 Metal</div>
+        <div class="node timber-related" id="timber" style="left: 304.667px; top: 687.667px; font-size:32px;">🪵 Timber</div>
+        <div class="node timber-related" id="manufactured" style="left: 508.06px; top: 781.267px; font-size:22px;">🏭 Manufactured</div>
+        <div class="node timber-related" id="mdf" style="left: 489.594px; top: 836.267px;">📦 MDF (Medium Density Fibre)</div>
+        <div class="node plastic-related" id="crudeoil" style="left: 467.688px; top: 108.624px;">🛢️(from crude oil)</div>
+        <div class="node plastic-related" id="plastics" style="left: 309.091px; top: 110.455px; font-size:32px;">🕳️Plastics</div>
+        <div class="node plastic-related" id="thermalsetting" style="left: 124.143px; top: 225.299px; font-size:22px;">🪖 Thermalsetting</div>
+        <div class="node plastic-related" id="epoxyresin" style="left: 117.571px; top: 271.857px;">💧 Epoxy resin, Polyester resin</div>
+        <div class="node plastic-related" id="notwaterproof" style="left: 488.584px; top: 263.651px;">💦Not waterproof</div>
+    </div>
+</div>
+
+<div id="controls">
+    <button id="saveButton">Save</button>
+    <button id="loadButton">Load</button>
+    <button id="removeAllLinesButton">Remove All Lines</button>
+    <input type="file" id="fileInput" style="display: none;" accept=".json">
+</div>
+
+<script>
+    const mindmapContainer = document.getElementById('mindmap-container');
+    const mindmap = document.getElementById('mindmap');
+    const linesLayer = document.getElementById('lines-layer');
+    let currentNode = null;
+    let offsetX = 0;
+    let offsetY = 0;
+    let startNode = null;
+    let tempLine = null;
+    let permanentLines = [];
+    let isPanning = false;
+    let panStartX = 0;
+    let panStartY = 0;
+    let scale = 1;
+    let translateX = 0;
+    let translateY = 0;
+    function removeAllLines() {
+        permanentLines.forEach(line => line.remove());
+        permanentLines = [];
+    }
+    
+    document.getElementById('removeAllLinesButton').addEventListener('click', removeAllLines);
+    function updateTransform() {
+        mindmap.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+    }
+
+    function screenToMindmap(x, y) {
+        const rect = mindmap.getBoundingClientRect();
+        return {
+            x: (x - rect.left) / scale,
+            y: (y - rect.top) / scale
+        };
+    }
+
+    document.querySelectorAll('.node').forEach(node => {
+        node.addEventListener('mousedown', dragStart);
+        node.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            startDrawing(e, node);
+        });
+    });
+
+    mindmapContainer.addEventListener('mousedown', (e) => {
+        if (e.button === 2 && !e.target.classList.contains('node')) {
+            e.preventDefault();
+            isPanning = true;
+            panStartX = e.clientX;
+            panStartY = e.clientY;
+        }
+    });
+
+    mindmapContainer.addEventListener('mousemove', (e) => {
+        if (isPanning) {
+            const dx = e.clientX - panStartX;
+            const dy = e.clientY - panStartY;
+            translateX += dx;
+            translateY += dy;
+            panStartX = e.clientX;
+            panStartY = e.clientY;
+            updateTransform();
+        } else if (startNode) {
+            updateTempLine(e);
+        }
+    });
+
+    mindmapContainer.addEventListener('mouseup', (e) => {
+        if (e.button === 2 && isPanning) {
+            isPanning = false;
+        }
+        if (startNode) {
+            finishDrawing(e);
+        }
+    });
+
+    mindmapContainer.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        const scaleAmount = -e.deltaY * 0.001;
+        const newScale = scale + scaleAmount;
+        if (newScale > 0.1 && newScale < 10) {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            const mapPosBeforeZoom = screenToMindmap(mouseX, mouseY);
+
+            scale = newScale;
+            updateTransform();
+
+            const mapPosAfterZoom = screenToMindmap(mouseX, mouseY);
+            translateX += (mapPosBeforeZoom.x - mapPosAfterZoom.x) * scale;
+            translateY += (mapPosBeforeZoom.y - mapPosAfterZoom.y) * scale;
+            updateTransform();
+        }
+    });
+
+    mindmapContainer.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+
+    function dragStart(e) {
+        if (e.button !== 0) return;
+        e.preventDefault();
+        currentNode = e.target;
+        const mousePos = screenToMindmap(e.clientX, e.clientY);
+        const nodeLeft = parseFloat(currentNode.style.left) || 0;
+        const nodeTop = parseFloat(currentNode.style.top) || 0;
+        offsetX = mousePos.x - nodeLeft;
+        offsetY = mousePos.y - nodeTop;
+        document.addEventListener('mousemove', dragMove);
+        document.addEventListener('mouseup', dragEnd);
+    }
+
+    function dragMove(e) {
+        if (!currentNode) return;
+        const mousePos = screenToMindmap(e.clientX, e.clientY);
+        const newLeft = mousePos.x - offsetX;
+        const newTop = mousePos.y - offsetY;
+        currentNode.style.left = `${newLeft}px`;
+        currentNode.style.top = `${newTop}px`;
+        updateConnectedLines(currentNode);
+    }
+
+    function dragEnd() {
+        document.removeEventListener('mousemove', dragMove);
+        document.removeEventListener('mouseup', dragEnd);
+        currentNode = null;
+    }
+
+    function startDrawing(e, node) {
+        startNode = node;
+        startNode.classList.add('selected');
+        const mousePos = screenToMindmap(e.clientX, e.clientY);
+        tempLine = createLine(getNodeCenter(startNode), mousePos);
+        linesLayer.appendChild(tempLine);
+    }
+
+    function updateTempLine(e) {
+        if (tempLine) {
+            const start = getNodeCenter(startNode);
+            const end = screenToMindmap(e.clientX, e.clientY);
+            updateLinePosition(tempLine, start, end);
+        }
+    }
+
+    function finishDrawing(e) {
+        if (!startNode || !tempLine) return;
+
+        const elementsAtPoint = document.elementsFromPoint(e.clientX, e.clientY);
+        const endNode = elementsAtPoint.find(el => el.classList && el.classList.contains('node') && el !== startNode);
+
+        if (endNode) {
+            const line = createLine(getNodeCenter(startNode), getNodeCenter(endNode));
+            line.classList.add('permanent-line');
+            line.startNode = startNode;
+            line.endNode = endNode;
+            linesLayer.insertBefore(line, linesLayer.firstChild);
+            permanentLines.push(line);
+
+            line.addEventListener('contextmenu', (e) => {
+                e.preventDefault();
+                deleteLine(line);
+            });
+        }
+
+        tempLine.remove();
+        startNode.classList.remove('selected');
+        startNode = null;
+        tempLine = null;
+    }
+
+    function createLine(start, end) {
+        const line = document.createElement('div');
+        line.classList.add('line');
+        updateLinePosition(line, start, end);
+        return line;
+    }
+
+    function updateLinePosition(line, start, end) {
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+        const length = Math.sqrt(dx * dx + dy * dy);
+        const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+        line.style.width = `${length}px`;
+        line.style.transform = `rotate(${angle}deg)`;
+        line.style.top = `${start.y}px`;
+        line.style.left = `${start.x}px`;
+    }
+
+    function getNodeCenter(node) {
+        const nodeRect = node.getBoundingClientRect();
+        const mindmapRect = mindmap.getBoundingClientRect();
+
+        return {
+            x: (nodeRect.left - mindmapRect.left + nodeRect.width / 2) / scale,
+            y: (nodeRect.top - mindmapRect.top + nodeRect.height / 2) / scale
+        };
+    }
+
+    function deleteLine(line) {
+        line.remove();
+        permanentLines = permanentLines.filter(l => l !== line);
+    }
+
+    function updateConnectedLines(node) {
+        permanentLines.forEach(line => {
+            if (line.startNode === node || line.endNode === node) {
+                updateLinePosition(line, getNodeCenter(line.startNode), getNodeCenter(line.endNode));
+            }
+        });
+    }
+
+    // Save functionality
+    document.getElementById('saveButton').addEventListener('click', saveState);
+
+    function saveState() {
+        const nodes = Array.from(document.querySelectorAll('.node')).map(node => ({
+            id: node.id,
+            left: node.style.left,
+            top: node.style.top
+        }));
+
+        const lines = permanentLines.map(line => ({
+            startNodeId: line.startNode.id,
+            endNodeId: line.endNode.id
+        }));
+
+        const state = { nodes, lines };
+        const blob = new Blob([JSON.stringify(state)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'mindmap_state.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Load functionality
+    document.getElementById('loadButton').addEventListener('click', () => {
+        document.getElementById('fileInput').click();
+    });
+
+    document.getElementById('fileInput').addEventListener('change', loadState);
+
+    function loadState(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const state = JSON.parse(e.target.result);
+                applyState(state);
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function applyState(state) {
+        // Clear existing lines
+        permanentLines.forEach(line => line.remove());
+        permanentLines = [];
+
+        // Apply node positions
+        state.nodes.forEach(nodeState => {
+            const node = document.getElementById(nodeState.id);
+            if (node) {
+                node.style.left = nodeState.left;
+                node.style.top = nodeState.top;
+            }
+        });
+
+        // Recreate lines
+        state.lines.forEach(lineState => {
+            const startNode = document.getElementById(lineState.startNodeId);
+            const endNode = document.getElementById(lineState.endNodeId);
+            if (startNode && endNode) {
+                const line = createLine(getNodeCenter(startNode), getNodeCenter(endNode));
+                line.classList.add('permanent-line');
+                line.startNode = startNode;
+                line.endNode = endNode;
+                linesLayer.insertBefore(line, linesLayer.firstChild);
+                permanentLines.push(line);
+
+                line.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    deleteLine(line);
+                });
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
